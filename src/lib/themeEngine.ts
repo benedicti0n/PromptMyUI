@@ -74,6 +74,43 @@ export const CORPORATE_CORAL_THEME: Theme = {
   },
 };
 
+export const MODERN_TEAL_THEME: Theme = {
+  id: "modern-teal",
+  name: "Modern Teal",
+  isBuiltIn: true,
+  createdAt: 0,
+  designTokens: {
+    colors: {
+      background: ["#FFFFFF", "#F4F4F4"],
+      foreground: ["#000000", "#333333"],
+      primary: ["#00BFA5"],
+      accent: ["#FF6F61", "#FFAB40"],
+      muted: ["#A9A9A9", "#D3D3D3"],
+      border: ["#E0E0E0"],
+    },
+    typography: {
+      fontDirection: "Clean modern sans-serif with elegant serif headings",
+      headingStyle: "Bold, large serif fonts with decorative elements",
+      bodyStyle: "Sans-serif, medium weight, with generous line spacing",
+      scale: "Varied scale with large headings and smaller body text",
+    },
+    spacing: "Generous spacing with clear hierarchy, using both padding and margins effectively",
+    radius: "Rounded corners on buttons and cards, creating a friendly appearance",
+    shadows: "Subtle shadows to create depth and separation between elements",
+    effects: "Minimalist effects with a focus on clarity and user interaction",
+  },
+  layoutRules: "Grid layout with a central hero section, supporting a balanced and organized structure",
+  responsiveRules: "Adapts to smaller screens by stacking elements vertically and adjusting font sizes for readability",
+  componentRules: {
+    buttons: "Rounded corners with gradient background, clear hover states",
+    cards: "Minimalist with subtle shadows and rounded corners to highlight content",
+    navigation: "Top navigation with clear, spaced links and a highlighted active state",
+    forms: "Clean input fields with distinct labels and error feedback",
+    badges: "Colorful badges with rounded edges for categorization",
+    sections: "Clearly divided with ample white space and visual hierarchy",
+  },
+};
+
 function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
   const clean = hex.replace("#", "");
   if (clean.length !== 6 && clean.length !== 3) return null;

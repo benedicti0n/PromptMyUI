@@ -15,11 +15,9 @@ function stripMarkdownCodeBlocks(text: string): string {
   const trimmed = text.trim();
   if (trimmed.startsWith("```")) {
     const lines = trimmed.split("\n");
-    // Remove first line (```json or ```)
     if (lines[0].startsWith("```")) {
       lines.shift();
     }
-    // Remove last line if it's ```
     if (lines[lines.length - 1].trim() === "```") {
       lines.pop();
     }
@@ -27,6 +25,116 @@ function stripMarkdownCodeBlocks(text: string): string {
   }
   return trimmed;
 }
+
+// OpenAI structured output schema - forces exact field names
+const structuredOutputSchema = {
+  name: "design_system_analysis",
+  strict: true,
+  schema: {
+    type: "object",
+    additionalProperties: false,
+    properties: {
+      styleSummary: { type: "string" },
+      designTokens: {
+        type: "object",
+        additionalProperties: false,
+        properties: {
+          colors: {
+            type: "object",
+            additionalProperties: false,
+            properties: {
+              background: { type: "array", items: { type: "string" } },
+              foreground: { type: "array", items: { type: "string" } },
+              primary: { type: "array", items: { type: "string" } },
+              accent: { type: "array", items: { type: "string" } },
+              muted: { type: "array", items: { type: "string" } },
+              border: { type: "array", items: { type: "string" } },
+            },
+            required: ["background", "foreground", "primary", "accent", "muted", "border"],
+          },
+          typography: {
+            type: "object",
+            additionalProperties: false,
+            properties: {
+              fontDirection: { type: "string" },
+              headingStyle: { type: "string" },
+              bodyStyle: { type: "string" },
+              scale: { type: "string" },
+            },
+            required: ["fontDirection", "headingStyle", "bodyStyle", "scale"],
+          },
+          detectedFonts: {
+            type: "array",
+            items: {
+              type: "object",
+              additionalProperties: false,
+              properties: {
+                role: { type: "string", enum: ["heading", "body", "mono"] },
+                detectedName: { type: "string" },
+                category: { type: "string" },
+                closestGoogleFont: { type: "string" },
+                googleFontsUrl: { type: "string" },
+                alternatives: { type: "array", items: { type: "string" } },
+              },
+              required: ["role", "detectedName", "category", "closestGoogleFont", "googleFontsUrl", "alternatives"],
+            },
+          },
+          fontPairing: { type: "string" },
+          visualAssets: {
+            type: "array",
+            items: {
+              type: "object",
+              additionalProperties: false,
+              properties: {
+                type: { type: "string", enum: ["background", "texture", "illustration", "pattern", "decoration"] },
+                description: { type: "string" },
+                location: { type: "string" },
+                moodKeywords: { type: "array", items: { type: "string" } },
+                searchKeywords: { type: "string" },
+                pinterestUrl: { type: "string" },
+                unsplashQuery: { type: "string" },
+              },
+              required: ["type", "description", "location", "moodKeywords", "searchKeywords", "pinterestUrl", "unsplashQuery"],
+            },
+          },
+          spacing: { type: "string" },
+          radius: { type: "string" },
+          shadows: { type: "string" },
+          effects: { type: "string" },
+        },
+        required: ["colors", "typography", "detectedFonts", "fontPairing", "visualAssets", "spacing", "radius", "shadows", "effects"],
+      },
+      componentRules: {
+        type: "object",
+        additionalProperties: false,
+        properties: {
+          buttons: { type: "string" },
+          cards: { type: "string" },
+          navigation: { type: "string" },
+          forms: { type: "string" },
+          badges: { type: "string" },
+          sections: { type: "string" },
+        },
+        required: ["buttons", "cards", "navigation", "forms", "badges", "sections"],
+      },
+      layoutRules: { type: "string" },
+      responsiveRules: { type: "string" },
+      doNotUse: { type: "array", items: { type: "string" } },
+      fullPrompt: { type: "string" },
+      validationChecklist: { type: "array", items: { type: "string" } },
+    },
+    required: [
+      "styleSummary",
+      "designTokens",
+      "componentRules",
+      "layoutRules",
+      "responsiveRules",
+      "doNotUse",
+      "fullPrompt",
+      "validationChecklist",
+    ],
+  },
+} as const;
 
 export async function generatePromptFromImage(
   input: GeneratePromptInput
@@ -71,7 +179,10 @@ export async function generatePromptFromImage(
     ],
     max_tokens: 6000,
     temperature: 0.7,
-    response_format: { type: "json_object" },
+    response_format: {
+      type: "json_schema",
+      json_schema: structuredOutputSchema,
+    },
   });
 
   const message = response.choices[0]?.message;

@@ -41,23 +41,23 @@
   --card-foreground: #000000;
   --popover: #FFFFFF;
   --popover-foreground: #000000;
-  --primary: #FF7F50;
+  --primary: #00BFA5;
   --primary-foreground: #FFFFFF;
-  --secondary: #FFA07A;
-  --secondary-foreground: #333333;
+  --secondary: #FF6F61;
+  --secondary-foreground: #FFFFFF;
   --muted: #F4F4F4;
   --muted-foreground: #A9A9A9;
-  --accent: #FF6347;
-  --accent-foreground: #FFFFFF;
+  --accent: #FFAB40;
+  --accent-foreground: #000000;
   --destructive: #EF4444;
   --border: #E0E0E0;
   --input: #E0E0E0;
-  --ring: #FF7F50;
+  --ring: #00BFA5;
   --radius: 0.5rem;
-  --font-heading-custom: 'Georgia', 'Times New Roman', 'Playfair Display', serif;
+  --font-heading-custom: 'Playfair Display', 'Georgia', 'Times New Roman', serif;
   --font-body: var(--font-geist-sans), 'Inter', 'Helvetica Neue', sans-serif;
   --spacing-unit: 8px;
-  --nav-align: right;
+  --nav-align: left;
 }
 
 .dark {

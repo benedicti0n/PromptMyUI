@@ -3,9 +3,79 @@ import { OutputDepth, TargetTool } from "@/types/promptGenerator";
 export function buildSystemPrompt(depth: OutputDepth): string {
   const base = `You are an expert frontend engineer, UI/UX designer, and design system specialist. Your task is to analyze a UI screenshot and extract its visual design DNA. You must not clone the exact code or layout. Instead, you extract the styling, aesthetics, design language, layout patterns, component rules, color palette, typography direction, spacing, shadows, borders, and overall visual personality.
 
-Analyze the uploaded image visually and extract the following:
+CRITICAL: You MUST return your response as a single JSON object matching EXACTLY the structure shown below. Do NOT change field names. Do NOT add extra top-level fields. Do NOT wrap the response in markdown code blocks. Do NOT include any text outside the JSON object.
 
-## Core Design Tokens
+Here is the EXACT structure you must follow:
+
+{
+  "styleSummary": "A concise 2-3 sentence summary of the overall visual style and emotional design intent.",
+  "designTokens": {
+    "colors": {
+      "background": ["#FFFFFF", "#F4F4F4"],
+      "foreground": ["#000000", "#333333"],
+      "primary": ["#FF7F50"],
+      "accent": ["#FFA07A", "#FF6347"],
+      "muted": ["#A9A9A9", "#D3D3D3"],
+      "border": ["#E0E0E0"]
+    },
+    "typography": {
+      "fontDirection": "Overall typography direction description",
+      "headingStyle": "Heading typography style description",
+      "bodyStyle": "Body text typography style description",
+      "scale": "Typography scale description"
+    },
+    "detectedFonts": [
+      {
+        "role": "heading",
+        "detectedName": "Best guess font name or 'Unknown Serif'",
+        "category": "serif",
+        "closestGoogleFont": "Playfair Display",
+        "googleFontsUrl": "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap",
+        "alternatives": ["Merriweather", "Lora"]
+      }
+    ],
+    "fontPairing": "Recommended font pairing description",
+    "visualAssets": [
+      {
+        "type": "background",
+        "description": "Description of the visual asset style",
+        "location": "Where it appears in the UI",
+        "moodKeywords": ["abstract", "soft", "gradient"],
+        "searchKeywords": "search query for stock photo sites",
+        "pinterestUrl": "https://www.pinterest.com/search/pins/?q=search+keywords",
+        "unsplashQuery": "search query for unsplash"
+      }
+    ],
+    "spacing": "Spacing scale description",
+    "radius": "Border radius patterns",
+    "shadows": "Shadow patterns",
+    "effects": "Visual effects description"
+  },
+  "componentRules": {
+    "buttons": "Button styling rules",
+    "cards": "Card styling rules",
+    "navigation": "Navigation styling rules",
+    "forms": "Form input styling rules",
+    "badges": "Badge styling rules",
+    "sections": "Section styling rules"
+  },
+  "layoutRules": "Layout structure description",
+  "responsiveRules": "Responsive behavior rules",
+  "doNotUse": ["List of things to avoid"],
+  "fullPrompt": "Leave this as empty string",
+  "validationChecklist": ["Checklist item 1", "Checklist item 2"]
+}
+
+FIELD NAME RULES - DO NOT CHANGE THESE:
+- Top level MUST be: styleSummary, designTokens, componentRules, layoutRules, responsiveRules, doNotUse, fullPrompt, validationChecklist
+- designTokens MUST contain: colors, typography, detectedFonts, fontPairing, visualAssets, spacing, radius, shadows, effects
+- colors MUST contain: background, foreground, primary, accent, muted, border (all arrays of hex strings)
+- typography MUST contain: fontDirection, headingStyle, bodyStyle, scale (all strings)
+- detectedFonts is an array of objects with: role, detectedName, category, closestGoogleFont, googleFontsUrl, alternatives
+- visualAssets is an array of objects with: type, description, location, moodKeywords, searchKeywords, pinterestUrl, unsplashQuery
+- componentRules MUST contain: buttons, cards, navigation, forms, badges, sections (all strings)
+
+Analyze the uploaded image visually and extract:
 - Product category (SaaS, e-commerce, portfolio, dashboard, etc.)
 - Overall visual style (minimal, brutalist, glassmorphism, neumorphism, corporate, playful, etc.)
 - Emotional design intent (trustworthy, energetic, calm, luxurious, friendly, etc.)
@@ -25,20 +95,15 @@ Analyze the uploaded image visually and extract the following:
 - Unique visual signatures
 - Things to avoid
 
-## Typography Detection (IMPORTANT)
+## Typography Detection
 Look closely at the fonts used in the screenshot. Try to identify:
 - The heading font (if recognizable: Inter, Playfair Display, Roboto, Helvetica, etc.)
 - The body font
 - Any monospace font used for code/data
 
-If you CANNOT identify the exact font name, provide your best guess based on visual characteristics AND suggest the closest Google Fonts match. Include:
-- detectedName: your best guess or "Unknown Sans-Serif"
-- closestGoogleFont: a real Google Fonts name that matches the visual style
-- googleFontsUrl: a working Google Fonts @import URL
-- alternatives: 2-3 similar Google Fonts options
-- category: serif, sans-serif, display, mono
+If you CANNOT identify the exact font name, provide your best guess based on visual characteristics AND suggest the closest Google Fonts match.
 
-## Visual Assets Detection (IMPORTANT)
+## Visual Assets Detection
 Scan the screenshot for visual assets that are part of the design system:
 - Background images (hero photos, section backgrounds)
 - Textures (grain, noise, paper, fabric, glass)
@@ -46,17 +111,9 @@ Scan the screenshot for visual assets that are part of the design system:
 - Illustrations (3D icons, hand-drawn elements, abstract shapes)
 - Decorative elements (gradients, blobs, waves, shapes)
 
-For each detected asset, provide:
-- A clear description of the asset's style (NOT the exact image, but the design system equivalent)
-- Where it appears in the UI
-- Mood keywords (3-5 words describing the aesthetic)
-- A concise search query string for finding similar assets on stock photo sites
-- A Pinterest search URL: https://www.pinterest.com/search/pins/?q=URL_ENCODED_QUERY
-- An Unsplash search query string
+For each detected asset, provide a description of the asset's style, where it appears, mood keywords, and search queries for finding similar assets.
 
-Focus on the DESIGN SYSTEM level — describe the TYPE of asset and its aesthetic qualities, not the specific file. The goal is to help someone find SIMILAR assets that match the same design language.
-
-You MUST return a single JSON object with EXACTLY the following structure. Do not add extra fields. Do not wrap the response in markdown code blocks. Do not include any text outside the JSON object.`;
+Focus on the DESIGN SYSTEM level — describe the TYPE of asset and its aesthetic qualities, not the specific file. The goal is to help someone find SIMILAR assets that match the same design language.`;
 
   const depthInstructions: Record<OutputDepth, string> = {
     quickPrompt:
@@ -94,7 +151,7 @@ export function buildUserPrompt(
       "The final prompt should be tool-agnostic and work with any AI coding assistant. Use universal design system language.",
   };
 
-  let prompt = `Analyze this UI screenshot and generate a structured design system prompt. Return ONLY the JSON object described in your instructions. No markdown, no extra text.\n\nTarget tool context: ${toolContext[targetTool]}\n\nOutput depth: ${depth}`;
+  let prompt = `Analyze this UI screenshot and generate a structured design system prompt. Return ONLY a raw JSON object. No markdown, no code blocks, no explanatory text before or after. The JSON must use EXACTLY the field names specified in your instructions.\n\nTarget tool context: ${toolContext[targetTool]}\n\nOutput depth: ${depth}`;
 
   if (extraInstruction.trim()) {
     prompt += `\n\nAdditional instruction: ${extraInstruction.trim()}`;
@@ -172,11 +229,29 @@ export function formatFullPrompt(
     }[targetTool] || "your AI coding tool";
 
   const fontsSection = result.designTokens.detectedFonts.length > 0
-    ? `\n\n## Typography\n\n**Font Pairing:** ${result.designTokens.fontPairing}\n\n${result.designTokens.detectedFonts.map((f) => `### ${f.role === "heading" ? "Heading" : f.role === "body" ? "Body" : "Monospace"} Font\n- Detected: ${f.detectedName}\n- Category: ${f.category}\n- Closest Google Font: ${f.closestGoogleFont}\n- Import: \`${f.googleFontsUrl}\`\n- Alternatives: ${f.alternatives.join(", ")}`).join("\n\n")}`
+    ? `
+
+## Typography
+
+**Font Pairing:** ${result.designTokens.fontPairing}
+
+${result.designTokens.detectedFonts.map((f) => `### ${f.role === "heading" ? "Heading" : f.role === "body" ? "Body" : "Monospace"} Font
+- Detected: ${f.detectedName}
+- Category: ${f.category}
+- Closest Google Font: ${f.closestGoogleFont}
+- Import: \`${f.googleFontsUrl}\`
+- Alternatives: ${f.alternatives.join(", ")}`).join("\n\n")}`
     : "";
 
   const assetsSection = result.designTokens.visualAssets.length > 0
-    ? `\n\n## Visual Assets\n\n${result.designTokens.visualAssets.map((a, i) => `${i + 1}. **${a.type}** — ${a.description}\n   - Location: ${a.location}\n   - Mood: ${a.moodKeywords.join(", ")}\n   - Search: "${a.searchKeywords}"`).join("\n\n")}`
+    ? `
+
+## Visual Assets
+
+${result.designTokens.visualAssets.map((a, i) => `${i + 1}. **${a.type}** — ${a.description}
+   - Location: ${a.location}
+   - Mood: ${a.moodKeywords.join(", ")}
+   - Search: "${a.searchKeywords}"`).join("\n\n")}`
     : "";
 
   return `# Role
