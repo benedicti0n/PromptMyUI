@@ -4,6 +4,8 @@ export function buildSystemPrompt(depth: OutputDepth): string {
   const base = `You are an expert frontend engineer, UI/UX designer, and design system specialist. Your task is to analyze a UI screenshot and extract its visual design DNA. You must not clone the exact code or layout. Instead, you extract the styling, aesthetics, design language, layout patterns, component rules, color palette, typography direction, spacing, shadows, borders, and overall visual personality.
 
 Analyze the uploaded image visually and extract the following:
+
+## Core Design Tokens
 - Product category (SaaS, e-commerce, portfolio, dashboard, etc.)
 - Overall visual style (minimal, brutalist, glassmorphism, neumorphism, corporate, playful, etc.)
 - Emotional design intent (trustworthy, energetic, calm, luxurious, friendly, etc.)
@@ -23,52 +25,46 @@ Analyze the uploaded image visually and extract the following:
 - Unique visual signatures
 - Things to avoid
 
-You MUST return a single JSON object with EXACTLY the following structure. Do not add extra fields. Do not wrap the response in markdown code blocks. Do not include any text outside the JSON object.
+## Typography Detection (IMPORTANT)
+Look closely at the fonts used in the screenshot. Try to identify:
+- The heading font (if recognizable: Inter, Playfair Display, Roboto, Helvetica, etc.)
+- The body font
+- Any monospace font used for code/data
 
-{
-  "styleSummary": "string - concise summary of overall visual style and emotional design intent",
-  "designTokens": {
-    "colors": {
-      "background": ["array of hex color strings for backgrounds"],
-      "foreground": ["array of hex color strings for text"],
-      "primary": ["array of hex color strings for primary actions"],
-      "accent": ["array of hex color strings for accents"],
-      "muted": ["array of hex color strings for muted/neutral tones"],
-      "border": ["array of hex color strings for borders"]
-    },
-    "typography": {
-      "fontDirection": "string - overall typography direction (e.g. modern sans-serif, elegant serif)",
-      "headingStyle": "string - heading typography style",
-      "bodyStyle": "string - body text typography style",
-      "scale": "string - typography scale description"
-    },
-    "spacing": "string - spacing scale and rhythm description",
-    "radius": "string - border radius patterns",
-    "shadows": "string - shadow and elevation patterns",
-    "effects": "string - visual effects like blur, glass, gradients, textures"
-  },
-  "componentRules": {
-    "buttons": "string - button styling rules",
-    "cards": "string - card styling rules",
-    "navigation": "string - navigation styling rules",
-    "forms": "string - form input styling rules",
-    "badges": "string - badge and tag styling rules",
-    "sections": "string - section container styling rules"
-  },
-  "layoutRules": "string - layout structure, grid, container width, alignment, hierarchy",
-  "responsiveRules": "string - responsive behavior rules for mobile, tablet, desktop",
-  "doNotUse": ["array of strings - things that would break the reference style"],
-  "fullPrompt": "string - the complete implementation prompt (you may leave this as empty string, it will be regenerated)",
-  "validationChecklist": ["array of strings - checklist items to validate the implementation"]
-}`;
+If you CANNOT identify the exact font name, provide your best guess based on visual characteristics AND suggest the closest Google Fonts match. Include:
+- detectedName: your best guess or "Unknown Sans-Serif"
+- closestGoogleFont: a real Google Fonts name that matches the visual style
+- googleFontsUrl: a working Google Fonts @import URL
+- alternatives: 2-3 similar Google Fonts options
+- category: serif, sans-serif, display, mono
+
+## Visual Assets Detection (IMPORTANT)
+Scan the screenshot for visual assets that are part of the design system:
+- Background images (hero photos, section backgrounds)
+- Textures (grain, noise, paper, fabric, glass)
+- Patterns (geometric, organic, dots, lines, grids)
+- Illustrations (3D icons, hand-drawn elements, abstract shapes)
+- Decorative elements (gradients, blobs, waves, shapes)
+
+For each detected asset, provide:
+- A clear description of the asset's style (NOT the exact image, but the design system equivalent)
+- Where it appears in the UI
+- Mood keywords (3-5 words describing the aesthetic)
+- A concise search query string for finding similar assets on stock photo sites
+- A Pinterest search URL: https://www.pinterest.com/search/pins/?q=URL_ENCODED_QUERY
+- An Unsplash search query string
+
+Focus on the DESIGN SYSTEM level — describe the TYPE of asset and its aesthetic qualities, not the specific file. The goal is to help someone find SIMILAR assets that match the same design language.
+
+You MUST return a single JSON object with EXACTLY the following structure. Do not add extra fields. Do not wrap the response in markdown code blocks. Do not include any text outside the JSON object.`;
 
   const depthInstructions: Record<OutputDepth, string> = {
     quickPrompt:
-      "Provide a concise, high-level summary. Focus on the most important visual attributes. Keep descriptions brief but actionable.",
+      "Provide a concise, high-level summary. Focus on the most important visual attributes. Keep descriptions brief but actionable. Include 1-2 detected fonts and 1-2 visual assets.",
     detailedDesignSystem:
-      "Provide a comprehensive design system breakdown. Include detailed color tokens, typography scale, spacing system, component specifications, and layout rules. Be thorough and specific.",
+      "Provide a comprehensive design system breakdown. Include detailed color tokens, typography scale, spacing system, component specifications, and layout rules. Detect 2-3 fonts and 3-4 visual assets with detailed descriptions.",
     fullImplementation:
-      "Provide an exhaustive implementation-ready design system. Include every detail needed to replicate the visual style: exact color values, precise typography specs, spacing tokens, shadow values, border styles, component behaviors, responsive breakpoints, animation suggestions, and edge cases. Be extremely detailed.",
+      "Provide an exhaustive implementation-ready design system. Include every detail needed to replicate the visual style: exact color values, precise typography specs, spacing tokens, shadow values, border styles, component behaviors, responsive breakpoints, animation suggestions, and edge cases. Detect ALL identifiable fonts and visual assets with maximum detail.",
   };
 
   return `${base}\n\nOutput depth instruction: ${depthInstructions[depth]}`;
@@ -125,6 +121,24 @@ export function formatFullPrompt(
         bodyStyle: string;
         scale: string;
       };
+      detectedFonts: {
+        role: string;
+        detectedName: string;
+        category: string;
+        closestGoogleFont: string;
+        googleFontsUrl: string;
+        alternatives: string[];
+      }[];
+      fontPairing: string;
+      visualAssets: {
+        type: string;
+        description: string;
+        location: string;
+        moodKeywords: string[];
+        searchKeywords: string;
+        pinterestUrl: string;
+        unsplashQuery: string;
+      }[];
       spacing: string;
       radius: string;
       shadows: string;
@@ -157,6 +171,14 @@ export function formatFullPrompt(
       generic: "your AI coding tool",
     }[targetTool] || "your AI coding tool";
 
+  const fontsSection = result.designTokens.detectedFonts.length > 0
+    ? `\n\n## Typography\n\n**Font Pairing:** ${result.designTokens.fontPairing}\n\n${result.designTokens.detectedFonts.map((f) => `### ${f.role === "heading" ? "Heading" : f.role === "body" ? "Body" : "Monospace"} Font\n- Detected: ${f.detectedName}\n- Category: ${f.category}\n- Closest Google Font: ${f.closestGoogleFont}\n- Import: \`${f.googleFontsUrl}\`\n- Alternatives: ${f.alternatives.join(", ")}`).join("\n\n")}`
+    : "";
+
+  const assetsSection = result.designTokens.visualAssets.length > 0
+    ? `\n\n## Visual Assets\n\n${result.designTokens.visualAssets.map((a, i) => `${i + 1}. **${a.type}** — ${a.description}\n   - Location: ${a.location}\n   - Mood: ${a.moodKeywords.join(", ")}\n   - Search: "${a.searchKeywords}"`).join("\n\n")}`
+    : "";
+
   return `# Role
 
 You are an expert frontend engineer, UI/UX designer, and design system specialist. Your task is to restyle an existing app using the visual language extracted from the uploaded reference image.
@@ -184,6 +206,8 @@ ${result.designTokens.effects}
 - Headings: ${result.designTokens.typography.headingStyle}
 - Body: ${result.designTokens.typography.bodyStyle}
 - Scale: ${result.designTokens.typography.scale}
+${fontsSection}
+${assetsSection}
 
 # Layout System
 

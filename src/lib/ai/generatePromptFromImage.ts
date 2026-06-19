@@ -69,7 +69,7 @@ export async function generatePromptFromImage(
         ],
       },
     ],
-    max_tokens: 4000,
+    max_tokens: 6000,
     temperature: 0.7,
     response_format: { type: "json_object" },
   });

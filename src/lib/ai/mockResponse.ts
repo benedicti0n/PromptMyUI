@@ -23,6 +23,54 @@ export function getMockResponse(): PromptResultOutput {
         scale:
           "Base 16px. Headings: 3xl-5xl (30-48px). Body: base-lg (16-18px). Small: sm (14px).",
       },
+      detectedFonts: [
+        {
+          role: "heading",
+          detectedName: "Inter",
+          category: "sans-serif",
+          closestGoogleFont: "Inter",
+          googleFontsUrl: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap",
+          alternatives: ["Manrope", "Geist", "DM Sans"],
+        },
+        {
+          role: "body",
+          detectedName: "Inter",
+          category: "sans-serif",
+          closestGoogleFont: "Inter",
+          googleFontsUrl: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap",
+          alternatives: ["DM Sans", "Plus Jakarta Sans", "Space Grotesk"],
+        },
+      ],
+      fontPairing: "Inter (heading + body) — clean geometric sans-serif system",
+      visualAssets: [
+        {
+          type: "background",
+          description: "Soft gradient mesh background with pastel purple and blue tones, slightly blurred for depth",
+          location: "Hero section background",
+          moodKeywords: ["abstract", "soft", "gradient", "pastel", "minimal"],
+          searchKeywords: "soft gradient mesh background pastel purple blue abstract minimal",
+          pinterestUrl: "https://www.pinterest.com/search/pins/?q=soft+gradient+mesh+background+pastel+purple+blue+abstract+minimal",
+          unsplashQuery: "soft gradient mesh background pastel purple",
+        },
+        {
+          type: "decoration",
+          description: "Abstract 3D blob shapes with glassmorphism effect, soft shadows, pastel colors",
+          location: "Decorative elements in hero and feature sections",
+          moodKeywords: ["3D", "blob", "glassmorphism", "pastel", "abstract"],
+          searchKeywords: "abstract 3D blob shapes glassmorphism pastel soft shadows",
+          pinterestUrl: "https://www.pinterest.com/search/pins/?q=abstract+3D+blob+shapes+glassmorphism+pastel+soft+shadows",
+          unsplashQuery: "abstract 3D blob shapes pastel",
+        },
+        {
+          type: "texture",
+          description: "Subtle grain noise texture overlay at very low opacity for depth",
+          location: "Global overlay across cards and sections",
+          moodKeywords: ["grain", "noise", "subtle", "texture", "depth"],
+          searchKeywords: "subtle grain noise texture overlay minimal UI",
+          pinterestUrl: "https://www.pinterest.com/search/pins/?q=subtle+grain+noise+texture+overlay+minimal+UI",
+          unsplashQuery: "subtle grain noise texture",
+        },
+      ],
       spacing:
         "Generous padding and gaps. Section padding: 80-120px vertical. Card padding: 24-32px. Component gaps: 16-24px. Base unit: 4px.",
       radius:
@@ -58,7 +106,7 @@ export function getMockResponse(): PromptResultOutput {
       "Drop shadows with high opacity or dark colors",
       "Multiple different border-radius values in the same component group",
     ],
-    fullPrompt: "", // Will be populated by formatter
+    fullPrompt: "",
     validationChecklist: [
       "All interactive elements have consistent border-radius (12-16px)",
       "Color palette uses only the defined purple-blue spectrum",

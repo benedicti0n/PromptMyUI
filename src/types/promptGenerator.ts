@@ -19,6 +19,25 @@ export interface GeneratorOptions {
   extraInstruction: string;
 }
 
+export interface DetectedFont {
+  role: "heading" | "body" | "mono";
+  detectedName: string;
+  category: string;
+  closestGoogleFont: string;
+  googleFontsUrl: string;
+  alternatives: string[];
+}
+
+export interface VisualAsset {
+  type: "background" | "texture" | "illustration" | "pattern" | "decoration";
+  description: string;
+  location: string;
+  moodKeywords: string[];
+  searchKeywords: string;
+  pinterestUrl: string;
+  unsplashQuery: string;
+}
+
 export interface DesignTokens {
   colors: {
     background: string[];
@@ -34,6 +53,9 @@ export interface DesignTokens {
     bodyStyle: string;
     scale: string;
   };
+  detectedFonts: DetectedFont[];
+  fontPairing: string;
+  visualAssets: VisualAsset[];
   spacing: string;
   radius: string;
   shadows: string;

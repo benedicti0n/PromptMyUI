@@ -17,6 +17,28 @@ export const promptResultSchema = z.object({
       bodyStyle: z.string().describe("Body text typography style"),
       scale: z.string().describe("Typography scale description"),
     }),
+    detectedFonts: z.array(
+      z.object({
+        role: z.enum(["heading", "body", "mono"]).describe("Font role in the design"),
+        detectedName: z.string().describe("Detected or closest matching font name"),
+        category: z.string().describe("Font category: serif, sans-serif, display, mono, etc."),
+        closestGoogleFont: z.string().describe("Closest Google Fonts match for the detected font"),
+        googleFontsUrl: z.string().describe("Direct Google Fonts CSS @import or link URL"),
+        alternatives: z.array(z.string()).describe("2-3 similar Google Fonts alternatives"),
+      })
+    ).describe("Detected fonts from the UI screenshot. If the exact font is unidentifiable, provide the closest match based on visual characteristics."),
+    fontPairing: z.string().describe("Recommended font pairing for the design system, e.g. 'Playfair Display + Inter'"),
+    visualAssets: z.array(
+      z.object({
+        type: z.enum(["background", "texture", "illustration", "pattern", "decoration"]).describe("Type of visual asset"),
+        description: z.string().describe("Brief description of the visual asset (e.g. 'dark grainy noise overlay', '3D abstract blob shapes')"),
+        location: z.string().describe("Where in the UI this asset appears (e.g. 'hero section background', 'card texture overlay')"),
+        moodKeywords: z.array(z.string()).describe("3-5 descriptive keywords for mood/style (e.g. ['abstract', 'minimal', 'soft', 'gradient']"),
+        searchKeywords: z.string().describe("Concise search query for stock image sites, e.g. 'minimal abstract gradient background'"),
+        pinterestUrl: z.string().describe("Pinterest search URL using the search keywords"),
+        unsplashQuery: z.string().describe("Unsplash search query string"),
+      })
+    ).describe("Visual assets detected in the UI screenshot: background images, textures, illustrations, patterns, decorative elements. Focus on the DESIGN SYSTEM level, not exact asset cloning."),
     spacing: z.string().describe("Spacing scale and rhythm description"),
     radius: z.string().describe("Border radius patterns"),
     shadows: z.string().describe("Shadow and elevation patterns"),

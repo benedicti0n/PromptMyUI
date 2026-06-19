@@ -4,6 +4,7 @@ import { useGeneratorStore } from "@/store/generatorStore";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { AssetsTab } from "./assetsTab";
 
 export function ResultTabs() {
   const { result, activeTab, setActiveTab } = useGeneratorStore();
@@ -20,12 +21,20 @@ export function ResultTabs() {
 
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-      <TabsList className="mb-4 grid w-full grid-cols-5">
-        <TabsTrigger value="summary">Summary</TabsTrigger>
-        <TabsTrigger value="tokens">Tokens</TabsTrigger>
-        <TabsTrigger value="components">Components</TabsTrigger>
-        <TabsTrigger value="fullPrompt">Full Prompt</TabsTrigger>
-        <TabsTrigger value="checklist">Checklist</TabsTrigger>
+      <TabsList className="mb-4 grid h-auto w-full grid-cols-3 gap-1 sm:grid-cols-6">
+        <TabsTrigger value="summary" className="text-xs sm:text-sm">Summary</TabsTrigger>
+        <TabsTrigger value="tokens" className="text-xs sm:text-sm">Tokens</TabsTrigger>
+        <TabsTrigger value="components" className="text-xs sm:text-sm">Components</TabsTrigger>
+        <TabsTrigger value="assets" className="text-xs sm:text-sm">
+          Assets
+          {result.designTokens.visualAssets?.length > 0 && (
+            <span className="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[9px] text-primary-foreground">
+              {result.designTokens.visualAssets.length}
+            </span>
+          )}
+        </TabsTrigger>
+        <TabsTrigger value="fullPrompt" className="text-xs sm:text-sm">Prompt</TabsTrigger>
+        <TabsTrigger value="checklist" className="text-xs sm:text-sm">Checklist</TabsTrigger>
       </TabsList>
 
       <TabsContent value="summary" className="animate-fade-in">
@@ -113,6 +122,10 @@ export function ResultTabs() {
             </div>
           ))}
         </div>
+      </TabsContent>
+
+      <TabsContent value="assets" className="animate-fade-in">
+        <AssetsTab />
       </TabsContent>
 
       <TabsContent value="fullPrompt" className="animate-fade-in">
