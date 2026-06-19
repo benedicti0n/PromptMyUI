@@ -6,9 +6,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-body, var(--font-geist-sans));
   --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-geist-sans);
+  --font-heading: var(--font-heading-custom, var(--font-geist-sans));
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
@@ -35,25 +35,29 @@
 }
 
 :root {
-  --background: #FAFAFB;
-  --foreground: #1A1A2E;
+  --background: #FFFFFF;
+  --foreground: #000000;
   --card: #FFFFFF;
-  --card-foreground: #1A1A2E;
+  --card-foreground: #000000;
   --popover: #FFFFFF;
-  --popover-foreground: #1A1A2E;
-  --primary: #7C6AFA;
+  --popover-foreground: #000000;
+  --primary: #FF7F50;
   --primary-foreground: #FFFFFF;
-  --secondary: #F0EEF8;
-  --secondary-foreground: #4A4458;
-  --muted: #F4F4F7;
-  --muted-foreground: #6E6680;
-  --accent: #EDE9FE;
-  --accent-foreground: #5E4EE0;
+  --secondary: #FFA07A;
+  --secondary-foreground: #333333;
+  --muted: #F4F4F4;
+  --muted-foreground: #A9A9A9;
+  --accent: #FF6347;
+  --accent-foreground: #FFFFFF;
   --destructive: #EF4444;
-  --border: #E8E6F0;
-  --input: #E8E6F0;
-  --ring: #7C6AFA;
-  --radius: 0.75rem;
+  --border: #E0E0E0;
+  --input: #E0E0E0;
+  --ring: #FF7F50;
+  --radius: 0.5rem;
+  --font-heading-custom: 'Georgia', 'Times New Roman', 'Playfair Display', serif;
+  --font-body: var(--font-geist-sans), 'Inter', 'Helvetica Neue', sans-serif;
+  --spacing-unit: 8px;
+  --nav-align: right;
 }
 
 .dark {
@@ -87,6 +91,33 @@
   html {
     @apply font-sans;
   }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading-custom);
+  }
+}
+
+/* Theme-responsive layout rules */
+body[data-nav-align="right"] header nav {
+  justify-content: flex-end;
+}
+
+body[data-nav-align="right"] header > div > div:last-child {
+  justify-content: flex-end;
+}
+
+body[data-nav-align="center"] header nav {
+  justify-content: center;
+}
+
+body[data-heading-serif="true"] h1,
+body[data-heading-serif="true"] h2,
+body[data-heading-serif="true"] h3,
+body[data-heading-serif="true"] h4,
+body[data-heading-serif="true"] h5,
+body[data-heading-serif="true"] h6 {
+  font-family: var(--font-heading-custom);
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 @keyframes fadeIn {
