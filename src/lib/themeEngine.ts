@@ -111,6 +111,43 @@ export const MODERN_TEAL_THEME: Theme = {
   },
 };
 
+export const RETRO_GRID_THEME: Theme = {
+  id: "retro-grid",
+  name: "Retro Grid",
+  isBuiltIn: true,
+  createdAt: 0,
+  designTokens: {
+    colors: {
+      background: ["#FAF9F5", "#F4F4F4"],
+      foreground: ["#000000", "#333333"],
+      primary: ["#00BFFF"],
+      accent: ["#87CEFA", "#4682B4"],
+      muted: ["#A9A9A9", "#D3D3D3"],
+      border: ["#E0E0E0"],
+    },
+    typography: {
+      fontDirection: "Classic serif for headings with modern sans-serif for body",
+      headingStyle: "Bold serif typography with high contrast for emphasis",
+      bodyStyle: "Clean sans-serif typography for easy readability",
+      scale: "Vertical scale with large headings and medium-sized body text",
+    },
+    spacing: "Consistent use of spacious margins and padding, creating an airy layout",
+    radius: "Minimal border radius, maintaining sharp clean edges for elements",
+    shadows: "Subtle drop shadows to provide slight depth and separation",
+    effects: "Use of outlined elements and grid patterns for a technical structured feel",
+  },
+  layoutRules: "Centered grid structure with clear delineation of sections using whitespace and subtle lines",
+  responsiveRules: "Adapts to smaller screens by stacking elements vertically and maintaining readability through scalable typography",
+  componentRules: {
+    buttons: "Minimal with a thin border, using primary color for hover states",
+    cards: "Flat with a muted background and subtle borders",
+    navigation: "Top navigation with minimal links and a hover underline effect",
+    forms: "Simple fields with clear labels and borders",
+    badges: "Not prominently used in this design",
+    sections: "Clearly divided using ample whitespace and subtle grid lines",
+  },
+};
+
 function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
   const clean = hex.replace("#", "");
   if (clean.length !== 6 && clean.length !== 3) return null;

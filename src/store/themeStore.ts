@@ -1,9 +1,9 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { Theme, ThemeState } from "@/types/theme";
-import { OG_UI_THEME, CORPORATE_CORAL_THEME, MODERN_TEAL_THEME } from "@/lib/themeEngine";
+import { OG_UI_THEME, CORPORATE_CORAL_THEME, MODERN_TEAL_THEME, RETRO_GRID_THEME } from "@/lib/themeEngine";
 
-const BUILT_IN_THEMES: Theme[] = [OG_UI_THEME, CORPORATE_CORAL_THEME, MODERN_TEAL_THEME];
+const BUILT_IN_THEMES: Theme[] = [OG_UI_THEME, CORPORATE_CORAL_THEME, MODERN_TEAL_THEME, RETRO_GRID_THEME];
 const BUILT_IN_IDS = new Set(BUILT_IN_THEMES.map((t) => t.id));
 
 interface ThemeStore extends ThemeState {
@@ -30,7 +30,7 @@ export const useThemeStore = create<ThemeStore>()(
   persist(
     (set, get) => ({
       themes: BUILT_IN_THEMES,
-      activeThemeId: MODERN_TEAL_THEME.id,
+      activeThemeId: RETRO_GRID_THEME.id,
 
       setActiveTheme: (id) => {
         set({ activeThemeId: id });
@@ -102,7 +102,7 @@ export const useThemeStore = create<ThemeStore>()(
         return {
           ...currentState,
           themes: mergeWithBuiltIns(savedThemes),
-          activeThemeId: saved.activeThemeId || MODERN_TEAL_THEME.id,
+          activeThemeId: saved.activeThemeId || RETRO_GRID_THEME.id,
         };
       },
     }

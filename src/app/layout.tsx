@@ -31,7 +31,7 @@ export default function RootLayout({
     >
       <body
         className="min-h-full flex flex-col"
-        data-nav-align="left"
+        data-nav-align="center"
         data-heading-serif="true"
       >
         <ThemeProvider>{children}</ThemeProvider>

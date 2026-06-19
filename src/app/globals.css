@@ -35,29 +35,29 @@
 }
 
 :root {
-  --background: #FFFFFF;
+  --background: #FAF9F5;
   --foreground: #000000;
   --card: #FFFFFF;
   --card-foreground: #000000;
   --popover: #FFFFFF;
   --popover-foreground: #000000;
-  --primary: #00BFA5;
+  --primary: #00BFFF;
   --primary-foreground: #FFFFFF;
-  --secondary: #FF6F61;
-  --secondary-foreground: #FFFFFF;
+  --secondary: #87CEFA;
+  --secondary-foreground: #000000;
   --muted: #F4F4F4;
   --muted-foreground: #A9A9A9;
-  --accent: #FFAB40;
-  --accent-foreground: #000000;
+  --accent: #4682B4;
+  --accent-foreground: #FFFFFF;
   --destructive: #EF4444;
   --border: #E0E0E0;
   --input: #E0E0E0;
-  --ring: #00BFA5;
-  --radius: 0.5rem;
+  --ring: #00BFFF;
+  --radius: 0.25rem;
   --font-heading-custom: 'Playfair Display', 'Georgia', 'Times New Roman', serif;
   --font-body: var(--font-geist-sans), 'Inter', 'Helvetica Neue', sans-serif;
   --spacing-unit: 8px;
-  --nav-align: left;
+  --nav-align: center;
 }
 
 .dark {
